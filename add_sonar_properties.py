@@ -42,6 +42,8 @@ if __name__ == "__main__":
         source_properties_content = properties_response.text
         repos = get_repos()
         for repo in repos:
-            add_sonar_properties(repo, source_properties_content)
+            if isinstance(repo, dict) and 'name' in repo:
+                add_sonar_properties(repo['name'], source_properties_content)  # Assuming repo['name'] is the repository name
     else:
         print(f"Failed to fetch SonarQube properties from {source_file_url}")
+
