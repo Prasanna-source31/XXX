@@ -4,7 +4,8 @@ import os
 
 # Set your GitHub organization name and access token
 organization = "Prasanna-source31"
-access_token = os.environ.get("PYTHON_SECRET")
+#access_token = os.environ.get("PYTHON_SECRET
+ access_token = "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"
 
 # Set the source repository and file path in the main branch
 source_repo = "XXX"
