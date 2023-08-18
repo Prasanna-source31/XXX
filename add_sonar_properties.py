@@ -41,9 +41,12 @@ if __name__ == "__main__":
     if properties_response.status_code == 200:
         source_properties_content = properties_response.text
         repos = get_repos()
+        print(f"Number of repos: {len(repos)}")  # Check the number of repositories
         for repo in repos:
             if isinstance(repo, dict) and 'name' in repo:
-                add_sonar_properties(repo['name'], source_properties_content)  # Assuming repo['name'] is the repository name
+                print(f"Adding properties to repo: {repo['name']}")
+                add_sonar_properties(repo['name'], source_properties_content)
     else:
         print(f"Failed to fetch SonarQube properties from {source_file_url}")
+
 
