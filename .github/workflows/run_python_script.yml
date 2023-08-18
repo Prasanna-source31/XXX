@@ -28,4 +28,4 @@ jobs:
       run: python add_sonar_properties.py
       env:
         ORGANIZATION: Prasanna-source31
-        ACCESS_TOKEN: ${{ secrets.GITHUB_ACCESS_TOKEN }}  # Create a repository secret for the access token
+        ACCESS_TOKEN: ${{ secrets.PYTHON_SECRET }}  # Create a repository secret for the access token
