@@ -44,8 +44,9 @@ if __name__ == "__main__":
         print(f"Number of repos: {len(repos)}")  # Check the number of repositories
         for repo in repos:
             if isinstance(repo, dict) and 'name' in repo:
-                print(f"Adding properties to repo: {repo['name']}")
-                add_sonar_properties(repo['name'], source_properties_content)
+                repo_name = repo['name']
+                print(f"Adding properties to repo: {repo_name}")
+                add_sonar_properties(repo_name, source_properties_content)
     else:
         print(f"Failed to fetch SonarQube properties from {source_file_url}")
 
