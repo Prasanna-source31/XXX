@@ -3,7 +3,7 @@ import base64
 
 # Set your GitHub organization name and access token
 organization = "Prasanna-source31"
-access_token = os.environ.get("python_secret")
+access_token = os.environ.get("PYTHON_SECRET")
 
 # Set the source repository and file path in the main branch
 source_repo = "XXX"
