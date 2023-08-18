@@ -8,7 +8,7 @@ access_token = os.environ.get("PYTHON_SECRET")
 
 # Set the source repository and file path in the main branch
 source_repo = "XXX"
-source_file_path = "./sonar.properties"
+source_file_path = "sonar.properties"
 
 def get_repos():
     url = f"https://api.github.com/orgs/{organization}/repos"
