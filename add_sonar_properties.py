@@ -1,17 +1,18 @@
 import requests
 
-def copy_file(org_name, repo_name, file_path):
-  url = "https://api.github.com/repos/{}/{}/contents/{}".format(org_name, repo_name, file_path)
-  headers = {"Authorization": "bearer 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"}
-  response = requests.post(url, headers=headers)
+def get_org_repos(org_name):
+  url = "https://api.github.com/orgs/{}/repos".format(org_name)
+  headers = {"Authorization": "bearer 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"}
+  response = requests.get(url, headers=headers)
 
-  if response.status_code == 201:
-    print("File copied successfully")
+  if response.status_code == 200:
+    return response.json()
   else:
-    print("Error copying file")
+    raise Exception("Error getting repos: {}".format(response.status_code))
 
 org_name = "Prasanna-source31"
-repo_name = "XXX"
-file_path = "sonar.properties"
 
-copy_file(org_name, repo_name, file_path)
+repos = get_org_repos(org_name)
+
+for repo in repos:
+  print(repo["name"])
