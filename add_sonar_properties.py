@@ -9,7 +9,7 @@ def get_org_repos(org_name):
 def add_file_to_repos(file_path, org_name, repo_name):
   repos = get_org_repos(org_name)
   for repo in repos:
-    if repo["name"] == repo_name:
+    if repo_name in repo:
       repo_url = "https://github.com/{}/{}".format(org_name, repo["name"])
       repo_clone_url = repo["clone_url"]
       cloned_repo = git.clone(repo_clone_url)
