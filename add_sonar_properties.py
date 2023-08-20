@@ -14,7 +14,7 @@ def add_file_to_repos(file_path, org_name, repo_name):
       repo_clone_url = repo["clone_url"]
       cloned_repo = git.clone(repo_clone_url)
       git.add(file_path, cloned_repo)
-      git.commit(message="Adding file to all repos", cloned_repo)
+      git.commit(message="Adding file to all repos", repo=cloned_repo)
       git.push(cloned_repo)
 
 file_path = "XXX/sonar.properties"
