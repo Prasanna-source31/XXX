@@ -17,7 +17,7 @@ def add_file_to_repos(file_path, org_name, repo_name):
       git.commit(message="Adding file to all repos", repo=cloned_repo)
       git.push(cloned_repo)
 
-file_path = "XXX/sonar.properties"
+file_path = "sonar.properties"
 org_name = "Prasanna-source31"
 repo_name = "XXX"
 
