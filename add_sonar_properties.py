@@ -1,25 +1,17 @@
 import requests
-token_variable = "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"
-def get_org_repos(org_name):
-  url = "https://api.github.com/orgs/{}/repos".format(org_name)
-  headers = {"Authorization": "bearer {}".format(token_variable)}
-  response = requests.get(url, headers=headers)
-  return response.json()
 
-def add_file_to_repos(file_path, org_name, repo_name):
-  repos = get_org_repos(org_name)
-  for repo in repos:
-    if repo_name in repo:
-      print("Repo: {}".format(repo["name"]))
-      repo_url = "https://github.com/{}/{}".format(org_name, repo["name"])
-      repo_clone_url = repo["clone_url"]
-      cloned_repo = git.clone(repo_clone_url)
-      git.add(file_path, cloned_repo)
-      git.commit(message="Adding file to all repos", repo=cloned_repo)
-      git.push(cloned_repo)
+def copy_file(org_name, repo_name, file_path):
+  url = "https://api.github.com/repos/{}/{}/contents/{}".format(org_name, repo_name, file_path)
+  headers = {"Authorization": "bearer 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"}
+  response = requests.post(url, headers=headers)
 
-file_path = "sonar.properties"
+  if response.status_code == 201:
+    print("File copied successfully")
+  else:
+    print("Error copying file")
+
 org_name = "Prasanna-source31"
 repo_name = "XXX"
+file_path = "sonar.properties"
 
-add_file_to_repos(file_path, org_name, repo_name)
+copy_file(org_name, repo_name, file_path)
