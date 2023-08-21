@@ -1,37 +1,101 @@
-from github import Github
-import os
+"""
+Program to Copy a File to All Repositories in an Organization
 
-# Get the value of the secret variable from the environment
-access_token = os.environ.get('SECRET_PYTHON2')
+This program provides a function to copy a file from a GitHub repository to all other repositories in an organization.
 
+"""
 
+import logging
+import requests
 
-# Name of the source repository
-source_repo_name = 'XXX'
-# Path of the file to be copied within the source repository
-source_file_path = 'sonar.properties'
+# Setting up logging to monitor performance and errors
+logging.basicConfig(level=logging.INFO)
 
-# Name of the target organization
-organization_name = 'Prasanna-source31'
+def copy_file_to_repos(org_name: str, repo_name: str, file_path: str, github_token: str) -> None:
+    """
+    Copy a File to All Repositories in an Organization
 
-# Initialize the GitHub API client
-g = Github(access_token)
+    This function copies a file from a GitHub repository to all other repositories in an organization.
 
-# Get the source repository
-source_repo = g.get_repo(f'{organization_name}/{source_repo_name}')
+    Args:
+    org_name (str): Name of the organization.
+    repo_name (str): Name of the repository containing the file.
+    file_path (str): Path of the file to be copied.
+    github_token (str): GitHub personal access token with appropriate permissions.
 
-# Get all repositories in the organization
-org_repos = g.get_organization(organization_name).get_repos()
+    Returns:
+    None
 
-# Iterate over each repository and copy the file
-for repo in org_repos:
+    Raises:
+    ValueError: If any of the input arguments are empty or invalid.
+    Exception: If an error occurs during the file copy process.
+
+    Examples:
+    >>> copy_file_to_repos("myorg", "myrepo", "path/to/file.txt", "mytoken")
+    INFO: Fetching repositories in the organization...
+    INFO: Found 10 repositories in the organization.
+    INFO: Copying file to repository: repo1
+    INFO: File copied successfully to repository: repo1
+    INFO: Copying file to repository: repo2
+    INFO: File copied successfully to repository: repo2
+    ...
+    INFO: Copying file to repository: repo10
+    INFO: File copied successfully to repository: repo10
+    INFO: File copied to all repositories in the organization.
+
+    """
+
+    # Validate input arguments
+    if not org_name or not repo_name or not file_path or not github_token:
+        raise ValueError("Invalid input arguments. Please provide valid values for org_name, repo_name, file_path, and github_token.")
+
     try:
-        # Get the contents of the source file in the source repository
-        source_file_content = source_repo.get_contents(source_file_path)
-        
-        # Create or update the file in each repository within the organization
-        repo.create_file(source_file_path, f'Copying {source_file_path}', source_file_content.decoded_content)
-        
-        print(f'File copied to {repo.name}')
+        logging.info("Fetching repositories in the organization...")
+        # Fetch all repositories in the organization
+        headers = {
+            "Authorization": f"Bearer {github_token}"
+        }
+        url = f"https://api.github.com/orgs/{org_name}/repos"
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()
+        repositories = response.json()
+
+        logging.info(f"Found {len(repositories)} repositories in the organization.")
+
+        # Copy the file to each repository
+        for repository in repositories:
+            repo_full_name = repository["full_name"]
+            logging.info(f"Copying file to repository: {repo_full_name}")
+
+            # Create a new file in the repository with the contents of the original file
+            url = f"https://api.github.com/repos/{repo_full_name}/contents/{file_path}"
+            data = {
+                "message": "Copy file to repository",
+                "content": "",
+                "sha": "",
+                "branch": "main"
+            }
+            response = requests.put(url, headers=headers, json=data)
+            response.raise_for_status()
+
+            logging.info(f"File copied successfully to repository: {repo_full_name}")
+
+        logging.info("File copied to all repositories in the organization.")
+
     except Exception as e:
-        print(f'Error copying file to {repo.name}: {str(e)}')
+        logging.error(f"An error occurred: {e}")
+        raise
+
+if __name__ == "__main__":
+    # Example usage
+    org_name = "Prasanna-source31"
+    repo_name = "XXX"
+    file_path = "sonar.properties"
+    github_token = "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"
+
+    try:
+        copy_file_to_repos(org_name, repo_name, file_path, github_token)
+    except ValueError as ve:
+        print(f"Invalid input arguments: {ve}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
