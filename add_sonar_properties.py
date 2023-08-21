@@ -1,25 +1,34 @@
-import requests
-token_variable = "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"
-def get_org_repos(org_name):
-  url = "https://api.github.com/orgs/{}/repos".format(org_name)
-  headers = {"Authorization": "bearer {}".format(token_variable)}
-  response = requests.get(url, headers=headers)
-  return response.json()
+from github import Github
 
-def add_file_to_repos(file_path, org_name, repo_name):
-  repos = get_org_repos(org_name)
-  for repo in repos:
-    if repo_name in repo:
-      print("Repo: {}".format(repo["name"]))
-      repo_url = "https://github.com/{}/{}".format(org_name, repo["name"])
-      repo_clone_url = repo["clone_url"]
-      cloned_repo = git.clone(repo_clone_url)
-      git.add(file_path, cloned_repo)
-      git.commit(message="Adding file to all repos", repo=cloned_repo)
-      git.push(cloned_repo)
+# Access token for authentication
+access_token = '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'
 
-file_path = "sonar.properties"
-org_name = "Prasanna-source31"
-repo_name = "XXX"
+# Name of the source repository
+source_repo_name = 'XXX'
+# Path of the file to be copied within the source repository
+source_file_path = 'sonar.properties'
 
-add_file_to_repos(file_path, org_name, repo_name)
+# Name of the target organization
+organization_name = 'Prasanna-source31'
+
+# Initialize the GitHub API client
+g = Github(access_token)
+
+# Get the source repository
+source_repo = g.get_repo(f'{organization_name}/{source_repo_name}')
+
+# Get all repositories in the organization
+org_repos = g.get_organization(organization_name).get_repos()
+
+# Iterate over each repository and copy the file
+for repo in org_repos:
+    try:
+        # Get the contents of the source file in the source repository
+        source_file_content = source_repo.get_contents(source_file_path)
+        
+        # Create or update the file in each repository within the organization
+        repo.create_file(source_file_path, f'Copying {source_file_path}', source_file_content.decoded_content)
+        
+        print(f'File copied to {repo.name}')
+    except Exception as e:
+        print(f'Error copying file to {repo.name}: {str(e)}')
