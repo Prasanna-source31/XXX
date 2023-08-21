@@ -1,0 +1,34 @@
+name: Copy File to All Repos
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  copy-file:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Repository
+        uses: actions/checkout@v2
+
+      - name: Copy File to All Repos
+        run: |
+          TOKEN="$GITHUB_TOKEN"
+          FILE_PATH="sonar.properties"
+          FILE_CONTENT="$(cat $FILE_PATH | base64)"
+
+          ORG_NAME="Prasanna-source31"
+          SOURCE_REPO="XXX"
+          TARGET_REPOS=$(gh repo list $ORG_NAME --json=name --jq=".[] | select(.name!=\"$SOURCE_REPO\") | .name")
+
+          for REPO in $TARGET_REPOS; do
+            curl -X PUT \
+              -H "Authorization: Bearer $TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              -d "{\"path\":\"$FILE_PATH\",\"message\":\"Copy $FILE_PATH\",\"content\":\"$FILE_CONTENT\"}" \
+              "https://api.github.com/repos/$ORG_NAME/$REPO/contents/$FILE_PATH"
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
