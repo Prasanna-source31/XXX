@@ -1,7 +1,7 @@
 from github import Github
 
 # Access token for authentication
-access_token = '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'
+access_token = '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'
 
 # Name of the source repository
 source_repo_name = 'XXX'
