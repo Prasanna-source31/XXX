@@ -1,22 +1,32 @@
 name: Copy File to All Repos
 
 on:
-  issues:
-   type:
-    -closed
-    -opened
+ issues:
+  type:
+   -closed
+   -opened
 
 jobs:
   copy-file:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt update
+          sudo apt install gh
+
+      - name: Authenticate with GitHub
+        run: |
+          echo ${{ secrets.PYTHON_SECRET }} | gh auth login --with-token
+
       - name: Checkout Source Repository
         uses: actions/checkout@v2
 
       - name: Copy File to All Repos
         run: |
-          TOKEN="$PYTHON_SECRET"
           FILE_PATH="sonar.properties"
           FILE_CONTENT="$(cat $FILE_PATH | base64)"
 
