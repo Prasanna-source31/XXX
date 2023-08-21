@@ -92,7 +92,7 @@ if __name__ == "__main__":
     org_name = "Prasanna-source31"
     repo_name = "XXX"
     file_path = "sonar.properties"
-    github_token = os.environ.get("SECRET_PYTHON2")
+    github_token = "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"
 
     try:
         copy_file_to_repos(org_name, repo_name, file_path, github_token)
