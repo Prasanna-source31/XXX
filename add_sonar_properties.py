@@ -1,7 +1,10 @@
 from github import Github
+import os
 
-# Access token for authentication
-access_token = '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'
+# Get the value of the secret variable from the environment
+access_token = os.environ.get('SECRET_PYTHON2')
+
+
 
 # Name of the source repository
 source_repo_name = 'XXX'
