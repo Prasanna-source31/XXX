@@ -1,9 +1,10 @@
 name: Copy File to All Repos
 
 on:
-  push:
-    branches:
-      - main
+  issues:
+   type:
+    -closed
+    -opened
 
 jobs:
   copy-file:
@@ -15,7 +16,7 @@ jobs:
 
       - name: Copy File to All Repos
         run: |
-          TOKEN="$GITHUB_TOKEN"
+          TOKEN="$PYTHON_SECRET"
           FILE_PATH="sonar.properties"
           FILE_CONTENT="$(cat $FILE_PATH | base64)"
 
@@ -31,4 +32,4 @@ jobs:
               "https://api.github.com/repos/$ORG_NAME/$REPO/contents/$FILE_PATH"
           done
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PYTHON_SECRET }}
