@@ -4,27 +4,26 @@ import os
 
 # Set your GitHub organization name and access token
 organization = "Prasanna-source31"
-#access_token = os.environ.get("PYTHON_SECRET
-#access_token = "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"
+access_token = os.environ.get("GITHUB_API")  # Store your access token in an environment variable
 
 # Set the source repository and file path in the main branch
 source_repo = "XXX"
 source_file_path = "sonar.properties"  # Just the filename
 
-def get_repos():
+def get_repos(access_token):
     url = f"https://api.github.com/orgs/{organization}/repos"
     headers = {
-        "Authorization": f"Bearer {PYTHON_SECRET}"
+        "Authorization": f"Bearer {access_token}"
     }
 
     response = requests.get(url, headers=headers)
     repos = response.json()
     return repos
 
-def get_file_content(repo, file_path):
+def get_file_content(repo, file_path, access_token):
     url = f"https://api.github.com/repos/{organization}/{repo}/contents/{file_path}"
     headers = {
-        "Authorization": f"Bearer {PYTHON_SECRET}"
+        "Authorization": f"Bearer {access_token}"
     }
 
     response = requests.get(url, headers=headers)
@@ -34,10 +33,10 @@ def get_file_content(repo, file_path):
             return base64.b64decode(content).decode("utf-8")
     return None
 
-def add_sonar_properties(repo, properties_content):
+def add_sonar_properties(repo, properties_content, access_token):
     url = f"https://api.github.com/repos/{organization}/{repo}/contents/sonar.properties"
     headers = {
-        "Authorization": f"Bearer {PYTHON_SECRET}"
+        "Authorization": f"Bearer {access_token}"
     }
 
     encoded_content = base64.b64encode(properties_content.encode("utf-8")).decode("utf-8")
@@ -53,16 +52,20 @@ def add_sonar_properties(repo, properties_content):
         print(f"Failed to add SonarQube properties to {repo}: {response.text}")
 
 if __name__ == "__main__":
-    source_properties_content = get_file_content(source_repo, source_file_path)
+    github_access_token = 'YOUR_ACCESS_TOKEN'  # Replace with your actual GitHub access token
+    source_properties_content = get_file_content(source_repo, source_file_path, github_access_token)
+    
     if source_properties_content is None:
         print(f"Failed to fetch SonarQube properties from {source_repo}")
     else:
         print("Source properties content:")
         print(source_properties_content)
-        repos = get_repos()
+        
+        repos = get_repos(github_access_token)
         print(f"Number of repos: {len(repos)}")
+        
         for repo in repos:
             if isinstance(repo, dict) and 'name' in repo:
                 repo_name = repo['name']
                 print(f"Adding properties to repo: {repo_name}")
-                add_sonar_properties(repo_name, source_properties_content)
+                add_sonar_properties(repo_name, source_properties_content, github_access_token)
