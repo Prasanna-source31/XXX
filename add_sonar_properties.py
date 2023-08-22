@@ -14,7 +14,7 @@ source_file_path = "sonar.properties"  # Just the filename
 def get_repos():
     url = f"https://api.github.com/orgs/{organization}/repos"
     headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}"
+        "Authorization": f"Bearer {PYTHON_SECRET}"
     }
 
     response = requests.get(url, headers=headers)
@@ -24,7 +24,7 @@ def get_repos():
 def get_file_content(repo, file_path):
     url = f"https://api.github.com/repos/{organization}/{repo}/contents/{file_path}"
     headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}"
+        "Authorization": f"Bearer {PYTHON_SECRET}"
     }
 
     response = requests.get(url, headers=headers)
@@ -37,7 +37,7 @@ def get_file_content(repo, file_path):
 def add_sonar_properties(repo, properties_content):
     url = f"https://api.github.com/repos/{organization}/{repo}/contents/sonar.properties"
     headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}"
+        "Authorization": f"Bearer {PYTHON_SECRET}"
     }
 
     encoded_content = base64.b64encode(properties_content.encode("utf-8")).decode("utf-8")
