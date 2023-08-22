@@ -52,7 +52,7 @@ def add_sonar_properties(repo, properties_content, access_token):
         print(f"Failed to add SonarQube properties to {repo}: {response.text}")
 
 if __name__ == "__main__":
-    github_access_token = 'YOUR_ACCESS_TOKEN'  # Replace with your actual GitHub access token
+    github_access_token = 'GITHUB_API'  # Replace with your actual GitHub access token
     source_properties_content = get_file_content(source_repo, source_file_path, github_access_token)
     
     if source_properties_content is None:
